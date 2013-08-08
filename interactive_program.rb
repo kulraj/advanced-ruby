@@ -11,12 +11,12 @@ program = ""
 line = ""
 begin 
   print "--> "
-  line = gets()
-  if line.strip == ''
+  line = gets
+  if line =~ /^\s*$/
     eval(program)
     program = ""
     print "\n"
   else
     program += line
   end
-end while !line.strip().match(/^q$/i)
+end while line !~ /^\s*q\s*$/i
