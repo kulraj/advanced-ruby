@@ -21,17 +21,21 @@ end
 class ShoppingList
 attr_reader :list
   def initialize
-    @list = []
+    @list = "hello"
   end
-  def add_item(item)
-    @list << item
+  def items(&block)
+    
   end
 end
-    
+
+def add(name, quantity)
+print "add"
+  item = Item.new(name, quantity)
+  print list
+end
 
 sl = ShoppingList.new
-toothpaste = Item.new("Toothpaste",2)
-computer = Item.new("Computer",1)
-sl.add_item(toothpaste)
-sl.add_item(computer)
-print sl.list
+sl.items do
+  add("Toothpaste",2)
+  add("Computer",1)
+end
