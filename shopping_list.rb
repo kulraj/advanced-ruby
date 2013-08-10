@@ -11,7 +11,8 @@ sl.items do
 =end
 
 class Item
-attr_reader :name, :quantity
+  attr_reader :name, :quantity
+
   def initialize(name, quantity)
     @name = name
     @quantity = quantity
@@ -19,19 +20,19 @@ attr_reader :name, :quantity
 end
 
 class ShoppingList
-attr_reader :list
   def initialize
-    @list = "hello"
+    @list = []
   end
   def items(&block)
-    
+    instance_eval(&block)
   end
-end
-
-def add(name, quantity)
-print "add"
-  item = Item.new(name, quantity)
-  print list
+  def add(name, quantity)
+    item = Item.new(name, quantity)
+    @list << item
+  end
+  def to_s
+    @list.each { |item| puts "Name: #{item.name}, Quantity = #{item.quantity}" }
+  end
 end
 
 sl = ShoppingList.new
@@ -39,3 +40,4 @@ sl.items do
   add("Toothpaste",2)
   add("Computer",1)
 end
+sl.to_s
