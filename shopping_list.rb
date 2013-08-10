@@ -30,7 +30,7 @@ class ShoppingList
     item = Item.new(name, quantity)
     @list << item
   end
-  def to_s
+  def show_items
     @list.each { |item| puts "Name: #{item.name}, Quantity = #{item.quantity}" }
   end
 end
@@ -40,4 +40,4 @@ sl.items do
   add("Toothpaste",2)
   add("Computer",1)
 end
-sl.to_s
+sl.show_items
