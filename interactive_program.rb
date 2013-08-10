@@ -9,14 +9,17 @@ puts "Enter a blank line to evaluate."
 puts "Enter 'q' to quit."
 program = ""
 line = ""
-begin 
+loop do 
   print "--> "
   line = gets
-  if line =~ /^\s*$/
+  case line.strip
+  when ""
     eval(program)
     program = ""
     print "\n"
+  when  /q/i
+    exit
   else
     program += line
   end
-end while line !~ /^\s*q\s*$/i
+end
