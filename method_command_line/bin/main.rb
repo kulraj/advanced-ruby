@@ -1,4 +1,4 @@
-require_relative 'prompt.rb'
+require_relative '../lib/prompt.rb'
 
 print "Enter the method name: "
 method_name = gets.chomp
