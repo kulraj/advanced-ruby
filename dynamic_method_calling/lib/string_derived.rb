@@ -1,6 +1,6 @@
 class StringDerived < String
-  def exclude?(*args)
-    !include?(args[0])
+  def exclude?(substring)
+    !include?(substring)
   end
   def pad
     " " + self + " "
