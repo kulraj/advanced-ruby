@@ -23,15 +23,22 @@ puts path_to_csv
 ClassName = "#{filename}".chop.capitalize
 puts ClassName
 objects = []
-flag = false
+class_declared = false
 CSV.foreach(path_to_csv) do |line|
-  if flag
+  if class_declared
     objects << Klass.new(*line)
+    #objects << t.instance_eval { initialize(*line) }
   else
-    line.each_index { |index| line[index] = line[index].to_sym }
-    print line
-    Klass = Object.const_set ClassName, Struct.new(*line)
-    flag = true
+    #line.each_index { |index| line[index] = line[index].to_sym }
+    Klass = Object.const_set ClassName, Class.new {
+      def initialize(*args)
+        args.each_with_index do |value, i|
+           send "@#{line[i]}" , value
+        end
+      end
+    }
+    class_declared = true
   end
 end
-print objects
+
+print objects[0]
