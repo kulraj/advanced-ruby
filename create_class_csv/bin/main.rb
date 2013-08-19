@@ -13,48 +13,32 @@ vilok,23,hissar
 require "csv"
 
 print "Enter the name of csv file you want to open (persons/places) : "
-filename = "places"
+filename = gets.chomp
 #generate dynamic path
 path_to_csv = File.dirname($0) + "/../csv/#{filename}.csv"
 #remove leading ./
 path_to_csv.slice!(0..1)
-puts path_to_csv
 #remove trailing 's' from filename as classname should be singular eg person if filename is persons
 ClassName = "#{filename}".chop.capitalize
-puts ClassName
 objects = []
 class_declared = false
 CSV.foreach(path_to_csv) do |line|
   if class_declared
     objects << Klass.new(*line)
-    #objects << t.instance_eval { initialize(*line) }
   else
-    #line.each_index { |index| line[index] = line[index].to_sym }
     Klass = Object.const_set ClassName, Class.new {
-      attr_accessor *line
-      #class << self
       define_method :initialize do |*args|
-      #def initialize (*args)
-        line.each_with_index { |field, i| self.class.class_eval %{ @#{field} = args[#{i}] } }
-        #puts self.class
-        #Place.class_eval %{
-        @name = args[0]
-        @country = args[1]
-        #puts args[0]
-        #puts self
+        line.each_with_index { |field, i| instance_variable_set("@#{field}", args[i]) }
       end
-    #end
       define_method :show do
-        puts @country
+        line.each do |field|
+         var = instance_variable_get("@#{field}")
+         print "#{field.capitalize}: #{var}, "
+       end
+       print "\n"
       end
     }
-
-      #define_method :initialize do |*args|
-       # line.each_with_index { |field, i| send "@#{ field }", args[i] }
-      #end
     class_declared = true
   end
 end
-#puts objects[0]
-#objects[0].initialize
 objects.each {|object| object.show }
