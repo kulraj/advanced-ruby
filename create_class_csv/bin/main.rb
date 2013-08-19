@@ -21,24 +21,36 @@ path_to_csv.slice!(0..1)
 #remove trailing 's' from filename as classname should be singular eg person if filename is persons
 ClassName = "#{ filename }".chop.capitalize
 objects = []
+attributes = []
 class_declared = false
-CSV.foreach(path_to_csv) do |line|
+CSV.foreach(path_to_csv) do |fields|
   if class_declared
-    objects << Klass.new(*line)
+    objects << Klass.new(*fields)
   else
+    #name and initialize the class
     Klass = Object.const_set ClassName, Class.new {
-      define_method :initialize do |*args|
-        line.each_with_index { |field, i| instance_variable_set("@#{field}", args[i]) }
+      attr_accessor *fields
+      define_method :initialize do |*values|
+        fields.each_with_index { |field, i| instance_variable_set("@#{ field }", values[i]) }
       end
       define_method :show do
-        line.each do |field|
-         var = instance_variable_get("@#{ field }")
-         print "#{ field.capitalize }: #{ var }, "
-       end
-       print "\n"
+        fields.each do |field|
+          var = instance_variable_get("@#{ field }")
+          print "#{ field.capitalize }: #{ var.capitalize }, "
+        end
+        print "\n"
+      end
+      # define the methods named as per the fields   
+      fields.each do |field|
+        self.class.send :define_method, field.to_sym, lambda {
+          objects.each { |object| puts object.instance_variable_get("@#{ field }").capitalize } 
+        }
       end
     }
+    attributes = fields
     class_declared = true
   end
 end
 objects.each { |object| object.show }
+puts "Enter the field you want to display (#{ attributes }) : "
+Klass.send(gets.chomp)
