@@ -15,11 +15,11 @@ require "csv"
 print "Enter the name of csv file you want to open (persons/places) : "
 filename = gets.chomp
 #generate dynamic path
-path_to_csv = File.dirname($0) + "/../csv/#{filename}.csv"
+path_to_csv = File.dirname($0) + "/../csv/#{ filename }.csv"
 #remove leading ./
 path_to_csv.slice!(0..1)
 #remove trailing 's' from filename as classname should be singular eg person if filename is persons
-ClassName = "#{filename}".chop.capitalize
+ClassName = "#{ filename }".chop.capitalize
 objects = []
 class_declared = false
 CSV.foreach(path_to_csv) do |line|
@@ -32,8 +32,8 @@ CSV.foreach(path_to_csv) do |line|
       end
       define_method :show do
         line.each do |field|
-         var = instance_variable_get("@#{field}")
-         print "#{field.capitalize}: #{var}, "
+         var = instance_variable_get("@#{ field }")
+         print "#{ field.capitalize }: #{ var }, "
        end
        print "\n"
       end
@@ -41,4 +41,4 @@ CSV.foreach(path_to_csv) do |line|
     class_declared = true
   end
 end
-objects.each {|object| object.show }
+objects.each { |object| object.show }
