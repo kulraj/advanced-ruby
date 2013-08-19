@@ -13,7 +13,7 @@ vilok,23,hissar
 require "csv"
 
 print "Enter the name of csv file you want to open (persons/places) : "
-filename = gets.chomp
+filename = "places"
 #generate dynamic path
 path_to_csv = File.dirname($0) + "/../csv/#{filename}.csv"
 #remove leading ./
@@ -31,14 +31,30 @@ CSV.foreach(path_to_csv) do |line|
   else
     #line.each_index { |index| line[index] = line[index].to_sym }
     Klass = Object.const_set ClassName, Class.new {
-      def initialize(*args)
-        args.each_with_index do |value, i|
-           send "@#{line[i]}" , value
-        end
+      attr_accessor *line
+      #class << self
+      define_method :initialize do |*args|
+      #def initialize (*args)
+        line.each_with_index { |field, i| self.class.class_eval %{ @#{field} = args[#{i}] } }
+        #puts self.class
+        #Place.class_eval %{
+        @name = args[0]
+        @country = args[1]
+        #puts args[0]
+        #puts self
+      end
+    #end
+      define_method :show do
+        puts @country
       end
     }
+
+      #define_method :initialize do |*args|
+       # line.each_with_index { |field, i| send "@#{ field }", args[i] }
+      #end
     class_declared = true
   end
 end
-
-print objects[0]
+#puts objects[0]
+#objects[0].initialize
+objects.each {|object| object.show }
