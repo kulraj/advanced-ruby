@@ -13,7 +13,7 @@ vilok,23,hissar
 require "csv"
 
 print "Enter the name of csv file you want to open (persons/places) : "
-filename = gets.chomp.downcase.strip
+filename = gets.downcase.strip
 #generate dynamic path
 path_to_csv = File.dirname($0) + "/../csv/#{ filename }.csv"
 #remove leading ./
@@ -53,4 +53,4 @@ CSV.foreach(path_to_csv) do |fields|
 end
 objects.each { |object| object.show }
 puts "Enter the field you want to display (#{ attributes }) : "
-Klass.send(gets.chomp.downcase.strip)
+Klass.send(gets.downcase.strip)
