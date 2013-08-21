@@ -1,6 +1,6 @@
 class Prompt
-  def self.add_method(method_name)
-    define_method method_name do |line_code|
+  def self.add_method(method_name, line_code)
+    define_method method_name do
       eval "#{line_code}"
     end
   end
