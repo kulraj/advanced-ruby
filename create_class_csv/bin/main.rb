@@ -16,8 +16,6 @@ print "Enter the name of csv file you want to open (persons/places) : "
 filename = gets.downcase.strip
 #generate dynamic path
 path_to_csv = File.dirname($0) + "/../csv/#{ filename }.csv"
-#remove leading ./
-path_to_csv.slice!(0..1)
 #remove trailing 's' from filename as classname should be singular eg person if filename is persons
 ClassName = "#{ filename }".chop.capitalize
 objects = []
