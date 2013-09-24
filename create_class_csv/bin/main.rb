@@ -10,45 +10,39 @@ gaurav,23,karnal
 vilok,23,hissar 
 =end
 
-require "csv"
+require_relative "../lib/csv_parser"
 
 print "Enter the name of csv file you want to open (persons/places) : "
-filename = gets.downcase.strip
-#generate dynamic path
-path_to_csv = File.dirname($0) + "/../csv/#{ filename }.csv"
-#remove trailing 's' from filename as classname should be singular eg person if filename is persons
-ClassName = "#{ filename }".chop.capitalize
+str = gets.downcase.strip
+csv_object = CsvParser.new(str)
+ClassName = csv_object.get_class_name
 objects = []
-attributes = []
-class_declared = false
-CSV.foreach(path_to_csv) do |fields|
-  if class_declared
-    objects << Klass.new(*fields)
-  else
-    #name and initialize the class
-    Klass = Object.const_set ClassName, Class.new {
-      attr_accessor *fields
-      define_method :initialize do |*values|
-        fields.each_with_index { |field, i| instance_variable_set("@#{ field }", values[i]) }
-      end
-      define_method :show do
-        fields.each do |field|
-          var = instance_variable_get("@#{ field }")
-          print "#{ field.capitalize }: #{ var.capitalize }, "
-        end
-        print "\n"
-      end
-      # define the methods named as per the fields   
-      fields.each do |field|
-        self.class.send :define_method, field.to_sym, lambda {
-          objects.each { |object| puts object.instance_variable_get("@#{ field }").capitalize } 
-        }
-      end
-    }
-    attributes = fields
-    class_declared = true
+
+Klass = Object.const_set ClassName, Class.new {
+  attr_accessor *csv_object.headers
+  define_method :initialize do |values|
+    csv_object.headers.each_with_index do |field, i|
+      send "#{ field }=", values[i]
+    end
   end
+  define_method :show do
+    csv_object.headers.each do |field|
+      var = send "#{ field }"
+      print "#{ field.capitalize }: #{ var.capitalize }, "
+    end
+    print "\n"
+  end
+  # define the methods named as per the fields   
+  csv_object.headers.each do |field|
+    self.class.send :define_method, field.to_sym, lambda {
+      objects.each { |object| puts object.send("#{ field }").capitalize } 
+    }
+  end
+}
+
+csv_object.rows.each do |row|
+  objects << Klass.new(row)
 end
-objects.each { |object| object.show }
-puts "Enter the field you want to display (#{ attributes }) : "
+
+puts "Enter the field you want to display (#{ csv_object.headers }) : "
 Klass.send(gets.downcase.strip)
