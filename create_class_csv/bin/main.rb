@@ -44,5 +44,6 @@ csv_object.rows.each do |row|
   objects << Klass.new(row)
 end
 
+objects.each { |object| object.show }
 puts "Enter the field you want to display (#{ csv_object.headers }) : "
 Klass.send(gets.downcase.strip)
